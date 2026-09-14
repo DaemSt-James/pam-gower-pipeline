@@ -1,0 +1,76 @@
+cff-version: 1.2.0
+message: "If you use this pipeline, please cite it as below, and cite the methods it applies (see README.md)."
+title: "PAM-Gower Pipeline: k-medoids cluster analysis of mixed-type data in R"
+abstract: >-
+  A reusable, dataset-independent R pipeline for partitioning around medoids
+  (PAM) on a Gower dissimilarity matrix, for data with mixed measurement types.
+  It covers explicit declaration and auditing of measurement types, three
+  documented routes to complete data, multi-criteria model selection including
+  bootstrap stability, split-half replication, robustness across algorithms and
+  a permutation reference distribution for the absence of structure, external
+  validation on variables excluded from the clustering, and an automatically
+  generated reporting checklist.
+type: software
+version: 1.0.0
+date-released: 2026-09-13
+license: MIT
+repository : "https://github.com/DaemSt-James/pam-gower-pipeline"
+*# doi: 10.5281/zenodo.XXXXXXX      # add after the first Zenodo release
+authors:
+  - given-names: DAEMON ELLIOTT
+    family-names: ST-JAMES
+    # orcid: "https://orcid.org/0009-0009-6407-5494"
+    affiliation: Université du Québec à Trois-Rivières, UQTR
+keywords:
+  - cluster analysis
+  - k-medoids
+  - partitioning around medoids
+  - Gower dissimilarity
+  - mixed-type data
+  - person-oriented methods
+  - typology
+  - R
+references:
+  - type: article
+    authors:
+      - given-names: John C.
+        family-names: Gower
+    title: "A general coefficient of similarity and some of its properties"
+    journal: Biometrics
+    volume: 27
+    issue: 4
+    year: 1971
+    doi: 10.2307/2528823
+  - type: book
+    authors:
+      - given-names: Leonard
+        family-names: Kaufman
+      - given-names: Peter J.
+        family-names: Rousseeuw
+    title: "Finding groups in data: An introduction to cluster analysis"
+    publisher:
+      name: Wiley
+    year: 1990
+    doi: 10.1002/9780470316801
+  - type: article
+    authors:
+      - given-names: Bruce D.
+        family-names: Rapkin
+      - given-names: Douglas A.
+        family-names: Luke
+    title: "Cluster analysis in community research: Epistemology and practice"
+    journal: American Journal of Community Psychology
+    volume: 21
+    issue: 2
+    year: 1993
+    doi: 10.1007/BF00941623
+  - type: article
+    authors:
+      - given-names: Christian
+        family-names: Hennig
+    title: "Cluster-wise assessment of cluster stability"
+    journal: Computational Statistics & Data Analysis
+    volume: 52
+    issue: 1
+    year: 2007
+    doi: 10.1016/j.csda.2006.11.025

@@ -1,0 +1,19 @@
+Documentation licence
+=====================
+
+All material in this repository OTHER THAN the R source files
+(`pam_gower_pipeline.R`, `make_example_data.R`) is licensed under the
+
+    Creative Commons Attribution 4.0 International License (CC BY 4.0)
+
+This covers README.md, everything in docs/, CHANGELOG.md, and the contents of
+outputs/ produced by the pipeline.
+
+You are free to share and adapt this material for any purpose, including
+commercially, provided you give appropriate credit, provide a link to the
+licence, and indicate if changes were made.
+
+Full licence text: https://creativecommons.org/licenses/by/4.0/legalcode
+Human-readable summary: https://creativecommons.org/licenses/by/4.0/
+
+Copyright (c) 2026, Daemon Elliott St-James

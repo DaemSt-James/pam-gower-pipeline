@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Does this method fit your problem? — PAM-Gower Pipeline</title>
+<style>
+  :root{
+    --bg:#ffffff; --panel:#f8fafc; --ink:#0f172a; --muted:#475569;
+    --line:#e2e8f0; --accent:#1f4e79; --accent-soft:#eaf1f8;
+    --green:#2e7d4f; --green-bg:#e9f6ee; --amber:#d98e2b; --amber-bg:#fff6e8;
+    --grey-bg:#f1f5f9;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font:16px/1.65 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    padding-block:0;
+  }
+  .wrap{max-width:1040px; margin:0 auto; padding:0 20px}
+  header{
+    border-bottom:3px solid var(--accent); padding-block:44px 26px; margin-bottom:34px;
+  }
+  h1{font-size:2.05rem; line-height:1.2; margin:0 0 10px; letter-spacing:-.01em}
+  .lede{font-size:1.08rem; color:var(--muted); margin:0 0 6px; max-width:62ch}
+  .crumb{font-size:.86rem; color:var(--muted); margin:14px 0 0}
+  .crumb a{color:var(--accent)}
+  h2{
+    font-size:1.4rem; margin:52px 0 14px; letter-spacing:-.005em;
+    padding-top:14px; border-top:1px solid var(--line);
+  }
+  h3{font-size:1.06rem; margin:30px 0 8px}
+  p{margin:0 0 14px; max-width:70ch}
+  strong{font-weight:650}
+  a{color:var(--accent)}
+  .commit{
+    background:var(--panel); border-left:4px solid var(--accent);
+    border-radius:0 8px 8px 0; padding:16px 20px; margin:0 0 14px;
+  }
+  .commit p:last-child{margin-bottom:0}
+  .commit .t{font-weight:650; color:var(--accent); margin-bottom:4px}
+  figure{margin:26px 0 10px}
+  figure svg{display:block; width:100%; height:auto;
+             border:1px solid var(--line); border-radius:12px; background:#fff}
+  figcaption{font-size:.88rem; color:var(--muted); margin-top:10px}
+  .tablewrap{overflow-x:auto; margin:18px 0 10px; -webkit-overflow-scrolling:touch}
+  table{border-collapse:collapse; font-size:.9rem; min-width:820px; width:100%}
+  th,td{border:1px solid var(--line); padding:9px 11px; vertical-align:top; text-align:left}
+  thead th{background:var(--accent); color:#fff; font-weight:650; position:sticky; top:0}
+  tbody tr:nth-child(even){background:var(--panel)}
+  td:first-child, th:first-child{font-weight:600}
+  td.pick{background:var(--accent-soft) !important}
+  thead th.pick{background:#16395a; box-shadow:inset 0 -4px 0 #4a9d6e}
+  ul.check{list-style:none; padding:0; margin:16px 0}
+  ul.check li{
+    position:relative; padding:8px 0 8px 34px; border-bottom:1px solid var(--line);
+    max-width:76ch;
+  }
+  ul.check li:before{
+    content:"\2610"; position:absolute; left:4px; top:6px;
+    font-size:1.25rem; color:var(--accent); line-height:1.3;
+  }
+  .refs p{font-size:.9rem; text-indent:-2em; padding-left:2em; margin-bottom:11px; max-width:74ch}
+  footer{
+    margin-top:56px; padding:22px 0 44px; border-top:1px solid var(--line);
+    font-size:.85rem; color:var(--muted);
+  }
+  @media (max-width:640px){
+    h1{font-size:1.6rem} body{font-size:15px}
+    header{padding-block:30px 20px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Does this method fit your problem?</h1>
+  <p class="lede">A decision guide for k-medoids clustering of mixed-type data.</p>
+  <p class="crumb">Part of the <a href="../README.md">PAM-Gower Pipeline</a>.
+     Read this before running anything — it will sometimes tell you to use
+     something else, which is the point.</p>
+</header>
+
+<h2>Why this guide exists</h2>
+<p>Cluster analysis is unusually easy to do and unusually hard to do well. Every
+algorithm returns clusters, including from data with no group structure at all;
+every solution can be given names; and almost every published cluster analysis
+reports the solution that was kept without reporting the ones that were not.</p>
+<p>So the first question is not <em>how many clusters</em> but <em>whether this
+method answers your question</em>. This guide works through that in ten steps,
+then compares the realistic alternatives, then gives you a checklist to run
+before you start.</p>
+
+<h2>Before the tree: what a cluster is</h2>
+<p>Three commitments, taken from the methodological literature on cluster
+analysis in the social and community sciences — principally Rapkin and Luke
+(1993) and Luke (2005). They are worth holding in mind while you work through
+the tree, because several of its branches only make sense in their light.</p>
+
+<div class="commit">
+  <p class="t">A clustering algorithm always returns clusters</p>
+  <p>PAM will partition random noise into <em>k</em> tidy groups and report a
+  respectable silhouette width for them. Nothing in the output distinguishes
+  that from real structure. The question is never “did the algorithm find
+  groups” but “is this partition distinguishable from what the same algorithm
+  produces on data with no multivariate structure”. Section 6.11 of the pipeline
+  builds that comparison; most published analyses never make it.</p>
+</div>
+
+<div class="commit">
+  <p class="t">Clusters are constructed, not discovered</p>
+  <p>A solution is the joint product of the variables you entered, the
+  dissimilarity you chose, the algorithm, and <em>k</em>. Change any one and the
+  typology changes. This is not a flaw to apologise for — it is a reason to
+  report all four, and to treat the resulting types as useful heuristics rather
+  than as natural kinds waiting to be found.</p>
+</div>
+
+<div class="commit">
+  <p class="t">Validity is external</p>
+  <p>A partition earns interpretation by relating to something it was not built
+  from. Internal indices describe the geometry of the space you constructed;
+  they cannot tell you whether that space corresponds to anything. This is why
+  node 10 of the tree exists, and why it is the last one.</p>
+</div>
+
+<h2>The decision tree</h2>
+<figure>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 1598" width="100%" role="img" aria-label="Decision tree for choosing k-medoids with Gower dissimilarity" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+<rect width="980" height="1598" fill="#ffffff"/>
+<text x="30" y="34" font-size="19" font-weight="700" fill="#0f172a">Does PAM with Gower dissimilarity fit your problem?</text><text x="30" y="57" font-size="12.8" fill="#64748b">Follow the spine downwards. A branch to the right leaves the pipeline; a dashed branch is a reason, not an exit.</text><line x1="30" y1="70" x2="950" y2="70" stroke="#e2e8f0" stroke-width="1.5"/>
+<path d="M56 166 V189" fill="none" stroke="#94a3b8" stroke-width="1.6"/>
+<path d="M51.5 189 L56 195.5 L60.5 189 Z" fill="#94a3b8"/>
+<path d="M56 276 V315" fill="none" stroke="#94a3b8" stroke-width="1.6"/>
+<path d="M51.5 315 L56 321.5 L60.5 315 Z" fill="#94a3b8"/>
+<path d="M56 402 V503" fill="none" stroke="#94a3b8" stroke-width="1.6"/>
+<path d="M51.5 503 L56 509.5 L60.5 503 Z" fill="#94a3b8"/>
+<path d="M56 590 V629" fill="none" stroke="#94a3b8" stroke-width="1.6"/>
+<path d="M51.5 629 L56 635.5 L60.5 629 Z" fill="#94a3b8"/>
+<path d="M56 716 V834" fill="none" stroke="#94a3b8" stroke-width="1.6"/>
+<path d="M51.5 834 L56 840.5 L60.5 834 Z" fill="#94a3b8"/>
+<path d="M56 904 V960" fill="none" stroke="#94a3b8" stroke-width="1.6"/>
+<path d="M51.5 960 L56 966.5 L60.5 960 Z" fill="#94a3b8"/>
+<path d="M56 1047 V1086" fill="none" stroke="#94a3b8" stroke-width="1.6"/>
+<path d="M51.5 1086 L56 1092.5 L60.5 1086 Z" fill="#94a3b8"/>
+<path d="M56 1173 V1212" fill="none" stroke="#94a3b8" stroke-width="1.6"/>
+<path d="M51.5 1212 L56 1218.5 L60.5 1212 Z" fill="#94a3b8"/>
+<path d="M56 1299 V1338" fill="none" stroke="#94a3b8" stroke-width="1.6"/>
+<path d="M51.5 1338 L56 1344.5 L60.5 1338 Z" fill="#94a3b8"/>
+<path d="M56 1425 V1464" fill="none" stroke="#3d8a5f" stroke-width="1.8"/>
+<path d="M51.5 1464 L56 1470.5 L60.5 1464 Z" fill="#3d8a5f"/>
+<rect x="30" y="86" width="440" height="80" rx="9" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.4"/>
+<path d="M31 96 q0 -9 9 -9 l0 0 l0 78 q-9 0 -9 -9 Z" fill="#1f4e79"/>
+<rect x="31" y="87" width="5" height="78" fill="#1f4e79" rx="2"/>
+<circle cx="59" cy="106" r="10.5" fill="#1f4e79"/>
+<text x="59" y="110.5" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">1</text>
+<text x="76" y="111" font-size="14" font-weight="650" fill="#0f172a">Is your question about people, or about variables?</text>
+<text x="50" y="132" font-size="12.6" fill="#475569">Clustering groups CASES. Factor analysis groups</text>
+<text x="50" y="149" font-size="12.6" fill="#475569">VARIABLES. They are not interchangeable.</text>
+<path d="M470 126.0 H515.0 V117.5 H552" fill="none" stroke="#94a3b8" stroke-width="1.4"/>
+<path d="M552 113.0 L559.5 117.5 L552 122.0 Z" fill="#94a3b8"/>
+<rect x="560" y="86" width="390" height="63" rx="9" fill="#f1f5f9" stroke="#a3b1c2" stroke-width="1.4"/>
+<path d="M561 96 q0 -9 9 -9 l0 0 l0 61 q-9 0 -9 -9 Z" fill="#8b9bad"/>
+<rect x="561" y="87" width="5" height="61" fill="#8b9bad" rx="2"/>
+<text x="580" y="111" font-size="14" font-weight="650" fill="#334155">Use factor analysis, SEM, or network analysis</text>
+<text x="580" y="132" font-size="12.6" fill="#475569">Clustering will answer a question you did not ask.</text>
+<rect x="30" y="196" width="440" height="80" rx="9" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.4"/>
+<path d="M31 206 q0 -9 9 -9 l0 0 l0 78 q-9 0 -9 -9 Z" fill="#1f4e79"/>
+<rect x="31" y="197" width="5" height="78" fill="#1f4e79" rx="2"/>
+<circle cx="59" cy="216" r="10.5" fill="#1f4e79"/>
+<text x="59" y="220.5" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">2</text>
+<text x="76" y="221" font-size="14" font-weight="650" fill="#0f172a">Do you expect types, or a continuum?</text>
+<text x="50" y="242" font-size="12.6" fill="#475569">A theoretical reason to expect qualitatively</text>
+<text x="50" y="259" font-size="12.6" fill="#475569">distinct groups, or a graded dimension?</text>
+<path d="M470 236.0 H515.0 V236.0 H552" fill="none" stroke="#94a3b8" stroke-width="1.4"/>
+<path d="M552 231.5 L559.5 236.0 L552 240.5 Z" fill="#94a3b8"/>
+<rect x="560" y="196" width="390" height="80" rx="9" fill="#fff6e8" stroke="#e0a04a" stroke-width="1.4"/>
+<path d="M561 206 q0 -9 9 -9 l0 0 l0 78 q-9 0 -9 -9 Z" fill="#d98e2b"/>
+<rect x="561" y="197" width="5" height="78" fill="#d98e2b" rx="2"/>
+<text x="580" y="221" font-size="14" font-weight="650" fill="#7a4a05">Proceed, but say so in the write-up</text>
+<text x="580" y="242" font-size="12.6" fill="#475569">An algorithm cuts a continuum into k pieces regardless.</text>
+<text x="580" y="259" font-size="12.6" fill="#475569">The pieces are real; calling them types is not.</text>
+<rect x="30" y="322" width="440" height="80" rx="9" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.4"/>
+<path d="M31 332 q0 -9 9 -9 l0 0 l0 78 q-9 0 -9 -9 Z" fill="#1f4e79"/>
+<rect x="31" y="323" width="5" height="78" fill="#1f4e79" rx="2"/>
+<circle cx="59" cy="342" r="10.5" fill="#1f4e79"/>
+<text x="59" y="346.5" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">3</text>
+<text x="76" y="347" font-size="14" font-weight="650" fill="#0f172a">What measurement types are your variables?</text>
+<text x="50" y="368" font-size="12.6" fill="#475569">Count them before answering: one ordinal item</text>
+<text x="50" y="385" font-size="12.6" fill="#475569">among ten continuous ones still makes it mixed.</text>
+<path d="M470 362.0 H515.0 V353.5 H552" fill="none" stroke="#94a3b8" stroke-width="1.4"/>
+<path d="M552 349.0 L559.5 353.5 L552 358.0 Z" fill="#94a3b8"/>
+<rect x="560" y="322" width="390" height="63" rx="9" fill="#f1f5f9" stroke="#a3b1c2" stroke-width="1.4"/>
+<path d="M561 332 q0 -9 9 -9 l0 0 l0 61 q-9 0 -9 -9 Z" fill="#8b9bad"/>
+<rect x="561" y="323" width="5" height="61" fill="#8b9bad" rx="2"/>
+<text x="580" y="347" font-size="14" font-weight="650" fill="#334155">k-means, or latent profile analysis</text>
+<text x="580" y="368" font-size="12.6" fill="#475569">Gower buys you nothing here.</text>
+<path d="M470 362.0 H515.0 V432.5 H552" fill="none" stroke="#94a3b8" stroke-width="1.4"/>
+<path d="M552 428.0 L559.5 432.5 L552 437.0 Z" fill="#94a3b8"/>
+<rect x="560" y="401" width="390" height="63" rx="9" fill="#f1f5f9" stroke="#a3b1c2" stroke-width="1.4"/>
+<path d="M561 411 q0 -9 9 -9 l0 0 l0 61 q-9 0 -9 -9 Z" fill="#8b9bad"/>
+<rect x="561" y="402" width="5" height="61" fill="#8b9bad" rx="2"/>
+<text x="580" y="426" font-size="14" font-weight="650" fill="#334155">Latent class analysis, or k-modes</text>
+<text x="580" y="447" font-size="12.6" fill="#475569">Gower reduces to simple matching.</text>
+<rect x="30" y="510" width="440" height="80" rx="9" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.4"/>
+<path d="M31 520 q0 -9 9 -9 l0 0 l0 78 q-9 0 -9 -9 Z" fill="#1f4e79"/>
+<rect x="31" y="511" width="5" height="78" fill="#1f4e79" rx="2"/>
+<circle cx="59" cy="530" r="10.5" fill="#1f4e79"/>
+<text x="59" y="534.5" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">4</text>
+<text x="76" y="535" font-size="14" font-weight="650" fill="#0f172a">Do you need probabilistic assignment and fit indices?</text>
+<text x="50" y="556" font-size="12.6" fill="#475569">The most consequential branch in this tree.</text>
+<text x="50" y="573" font-size="12.6" fill="#475569">See the note directly below the diagram.</text>
+<path d="M470 550.0 H515.0 V550.0 H552" fill="none" stroke="#94a3b8" stroke-width="1.4"/>
+<path d="M552 545.5 L559.5 550.0 L552 554.5 Z" fill="#94a3b8"/>
+<rect x="560" y="510" width="390" height="80" rx="9" fill="#f1f5f9" stroke="#a3b1c2" stroke-width="1.4"/>
+<path d="M561 520 q0 -9 9 -9 l0 0 l0 78 q-9 0 -9 -9 Z" fill="#8b9bad"/>
+<rect x="561" y="511" width="5" height="78" fill="#8b9bad" rx="2"/>
+<text x="580" y="535" font-size="14" font-weight="650" fill="#334155">Latent class or latent profile analysis</text>
+<text x="580" y="556" font-size="12.6" fill="#475569">Mixture models handle mixed types too, and give you</text>
+<text x="580" y="573" font-size="12.6" fill="#475569">BIC, entropy, and a probability per case.</text>
+<rect x="30" y="636" width="440" height="80" rx="9" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.4"/>
+<path d="M31 646 q0 -9 9 -9 l0 0 l0 78 q-9 0 -9 -9 Z" fill="#1f4e79"/>
+<rect x="31" y="637" width="5" height="78" fill="#1f4e79" rx="2"/>
+<circle cx="59" cy="656" r="10.5" fill="#1f4e79"/>
+<text x="59" y="660.5" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">5</text>
+<text x="76" y="661" font-size="14" font-weight="650" fill="#0f172a">How many cases?</text>
+<text x="50" y="682" font-size="12.6" fill="#475569">PAM holds an n x n dissimilarity matrix in memory</text>
+<text x="50" y="699" font-size="12.6" fill="#475569">and its cost grows with the square of n.</text>
+<path d="M470 676.0 H515.0 V676.0 H552" fill="none" stroke="#94a3b8" stroke-width="1.4"/>
+<path d="M552 671.5 L559.5 676.0 L552 680.5 Z" fill="#94a3b8"/>
+<rect x="560" y="636" width="390" height="80" rx="9" fill="#fff6e8" stroke="#e0a04a" stroke-width="1.4"/>
+<path d="M561 646 q0 -9 9 -9 l0 0 l0 78 q-9 0 -9 -9 Z" fill="#d98e2b"/>
+<rect x="561" y="637" width="5" height="78" fill="#d98e2b" rx="2"/>
+<text x="580" y="661" font-size="14" font-weight="650" fill="#7a4a05">Describe rather than classify</text>
+<text x="580" y="682" font-size="12.6" fill="#475569">Every index in the pipeline is unstable at this size;</text>
+<text x="580" y="699" font-size="12.6" fill="#475569">so is the solution.</text>
+<path d="M470 676.0 H515.0 V763.5 H552" fill="none" stroke="#94a3b8" stroke-width="1.4"/>
+<path d="M552 759.0 L559.5 763.5 L552 768.0 Z" fill="#94a3b8"/>
+<rect x="560" y="732" width="390" height="63" rx="9" fill="#f1f5f9" stroke="#a3b1c2" stroke-width="1.4"/>
+<path d="M561 742 q0 -9 9 -9 l0 0 l0 61 q-9 0 -9 -9 Z" fill="#8b9bad"/>
+<rect x="561" y="733" width="5" height="61" fill="#8b9bad" rx="2"/>
+<text x="580" y="757" font-size="14" font-weight="650" fill="#334155">CLARA, or k-prototypes</text>
+<text x="580" y="778" font-size="12.6" fill="#475569">CLARA samples; k-prototypes avoids the full matrix.</text>
+<rect x="30" y="841" width="440" height="63" rx="9" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.4"/>
+<path d="M31 851 q0 -9 9 -9 l0 0 l0 61 q-9 0 -9 -9 Z" fill="#1f4e79"/>
+<rect x="31" y="842" width="5" height="61" fill="#1f4e79" rx="2"/>
+<circle cx="59" cy="861" r="10.5" fill="#1f4e79"/>
+<text x="59" y="865.5" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">6</text>
+<text x="76" y="866" font-size="14" font-weight="650" fill="#0f172a">Outliers, or strongly skewed variables?</text>
+<text x="50" y="887" font-size="12.6" fill="#475569">Not a branch: a reason.</text>
+<path d="M470 872.5 H515.0 V881.0 H552" fill="none" stroke="#9fb8a8" stroke-width="1.4" stroke-dasharray="5 4"/>
+<path d="M552 876.5 L559.5 881.0 L552 885.5 Z" fill="#9fb8a8"/>
+<rect x="560" y="841" width="390" height="80" rx="9" fill="#e9f6ee" stroke="#3d8a5f" stroke-width="1.4" stroke-dasharray="5 4"/>
+<path d="M561 851 q0 -9 9 -9 l0 0 l0 78 q-9 0 -9 -9 Z" fill="#2e7d4f"/>
+<rect x="561" y="842" width="5" height="78" fill="#2e7d4f" rx="2"/>
+<text x="580" y="866" font-size="14" font-weight="650" fill="#14532d">An argument FOR medoids</text>
+<text x="580" y="887" font-size="12.6" fill="#475569">A k-means centroid is dragged by extreme values.</text>
+<text x="580" y="904" font-size="12.6" fill="#475569">A medoid is an actual case and cannot be.</text>
+<rect x="30" y="967" width="440" height="80" rx="9" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.4"/>
+<path d="M31 977 q0 -9 9 -9 l0 0 l0 78 q-9 0 -9 -9 Z" fill="#1f4e79"/>
+<rect x="31" y="968" width="5" height="78" fill="#1f4e79" rx="2"/>
+<circle cx="59" cy="987" r="10.5" fill="#1f4e79"/>
+<text x="59" y="991.5" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">7</text>
+<text x="76" y="992" font-size="14" font-weight="650" fill="#0f172a">Do you need a representative case per group?</text>
+<text x="50" y="1013" font-size="12.6" fill="#475569">For interview sampling, mixed-method designs,</text>
+<text x="50" y="1030" font-size="12.6" fill="#475569">or simply for describing a group concretely.</text>
+<path d="M470 1007.0 H515.0 V1007.0 H552" fill="none" stroke="#9fb8a8" stroke-width="1.4" stroke-dasharray="5 4"/>
+<path d="M552 1002.5 L559.5 1007.0 L552 1011.5 Z" fill="#9fb8a8"/>
+<rect x="560" y="967" width="390" height="80" rx="9" fill="#e9f6ee" stroke="#3d8a5f" stroke-width="1.4" stroke-dasharray="5 4"/>
+<path d="M561 977 q0 -9 9 -9 l0 0 l0 78 q-9 0 -9 -9 Z" fill="#2e7d4f"/>
+<rect x="561" y="968" width="5" height="78" fill="#2e7d4f" rx="2"/>
+<text x="580" y="992" font-size="14" font-weight="650" fill="#14532d">Only medoid methods give you one</text>
+<text x="580" y="1013" font-size="12.6" fill="#475569">A real participant with an ID, not an average</text>
+<text x="580" y="1030" font-size="12.6" fill="#475569">that may describe nobody.</text>
+<rect x="30" y="1093" width="440" height="80" rx="9" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.4"/>
+<path d="M31 1103 q0 -9 9 -9 l0 0 l0 78 q-9 0 -9 -9 Z" fill="#1f4e79"/>
+<rect x="31" y="1094" width="5" height="78" fill="#1f4e79" rx="2"/>
+<circle cx="59" cy="1113" r="10.5" fill="#1f4e79"/>
+<text x="59" y="1117.5" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">8</text>
+<text x="76" y="1118" font-size="14" font-weight="650" fill="#0f172a">Is the nesting of solutions itself of interest?</text>
+<text x="50" y="1139" font-size="12.6" fill="#475569">Whether groups sit inside larger groups,</text>
+<text x="50" y="1156" font-size="12.6" fill="#475569">rather than side by side.</text>
+<path d="M470 1133.0 H515.0 V1133.0 H552" fill="none" stroke="#9fb8a8" stroke-width="1.4" stroke-dasharray="5 4"/>
+<path d="M552 1128.5 L559.5 1133.0 L552 1137.5 Z" fill="#9fb8a8"/>
+<rect x="560" y="1093" width="390" height="80" rx="9" fill="#f1f5f9" stroke="#a3b1c2" stroke-width="1.4" stroke-dasharray="5 4"/>
+<path d="M561 1103 q0 -9 9 -9 l0 0 l0 78 q-9 0 -9 -9 Z" fill="#8b9bad"/>
+<rect x="561" y="1094" width="5" height="78" fill="#8b9bad" rx="2"/>
+<text x="580" y="1118" font-size="14" font-weight="650" fill="#334155">Add hierarchical clustering alongside</text>
+<text x="580" y="1139" font-size="12.6" fill="#475569">On the same Gower matrix. Section 6.10 of the</text>
+<text x="580" y="1156" font-size="12.6" fill="#475569">pipeline already does this as a robustness check.</text>
+<rect x="30" y="1219" width="440" height="80" rx="9" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.4"/>
+<path d="M31 1229 q0 -9 9 -9 l0 0 l0 78 q-9 0 -9 -9 Z" fill="#1f4e79"/>
+<rect x="31" y="1220" width="5" height="78" fill="#1f4e79" rx="2"/>
+<circle cx="59" cy="1239" r="10.5" fill="#1f4e79"/>
+<text x="59" y="1243.5" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">9</text>
+<text x="76" y="1244" font-size="14" font-weight="650" fill="#0f172a">How much is missing on the clustering variables?</text>
+<text x="50" y="1265" font-size="12.6" fill="#475569">Every method here needs complete data,</text>
+<text x="50" y="1282" font-size="12.6" fill="#475569">one way or another.</text>
+<path d="M470 1259.0 H515.0 V1259.0 H552" fill="none" stroke="#94a3b8" stroke-width="1.4"/>
+<path d="M552 1254.5 L559.5 1259.0 L552 1263.5 Z" fill="#94a3b8"/>
+<rect x="560" y="1219" width="390" height="80" rx="9" fill="#fff6e8" stroke="#e0a04a" stroke-width="1.4"/>
+<path d="M561 1229 q0 -9 9 -9 l0 0 l0 78 q-9 0 -9 -9 Z" fill="#d98e2b"/>
+<rect x="561" y="1220" width="5" height="78" fill="#d98e2b" rx="2"/>
+<text x="580" y="1244" font-size="14" font-weight="650" fill="#7a4a05">Settle this before choosing a method</text>
+<text x="580" y="1265" font-size="12.6" fill="#475569">At this level the missing-data decision shapes the</text>
+<text x="580" y="1282" font-size="12.6" fill="#475569">typology more than the algorithm does.</text>
+<rect x="30" y="1345" width="440" height="80" rx="9" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.4"/>
+<path d="M31 1355 q0 -9 9 -9 l0 0 l0 78 q-9 0 -9 -9 Z" fill="#1f4e79"/>
+<rect x="31" y="1346" width="5" height="78" fill="#1f4e79" rx="2"/>
+<circle cx="59" cy="1365" r="10.5" fill="#1f4e79"/>
+<text x="59" y="1369.5" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">10</text>
+<text x="76" y="1370" font-size="14" font-weight="650" fill="#0f172a">Will you keep some variables OUT of the clustering?</text>
+<text x="50" y="1391" font-size="12.6" fill="#475569">Variables on which the clusters should differ</text>
+<text x="50" y="1408" font-size="12.6" fill="#475569">if the typology means anything.</text>
+<path d="M470 1385.0 H515.0 V1385.0 H552" fill="none" stroke="#94a3b8" stroke-width="1.4"/>
+<path d="M552 1380.5 L559.5 1385.0 L552 1389.5 Z" fill="#94a3b8"/>
+<rect x="560" y="1345" width="390" height="80" rx="9" fill="#fff6e8" stroke="#e0a04a" stroke-width="1.4"/>
+<path d="M561 1355 q0 -9 9 -9 l0 0 l0 78 q-9 0 -9 -9 Z" fill="#d98e2b"/>
+<rect x="561" y="1346" width="5" height="78" fill="#d98e2b" rx="2"/>
+<text x="580" y="1370" font-size="14" font-weight="650" fill="#7a4a05">You will have a partition, not a typology</text>
+<text x="580" y="1391" font-size="12.6" fill="#475569">Defensible if you write it that way. Most papers</text>
+<text x="580" y="1408" font-size="12.6" fill="#475569">do not, which is why this node exists.</text>
+<rect x="30" y="1471" width="560" height="97" rx="9" fill="#e9f6ee" stroke="#3d8a5f" stroke-width="1.4"/>
+<path d="M31 1481 q0 -9 9 -9 l0 0 l0 95 q-9 0 -9 -9 Z" fill="#2e7d4f"/>
+<rect x="31" y="1472" width="5" height="95" fill="#2e7d4f" rx="2"/>
+<text x="50" y="1496" font-size="14" font-weight="650" fill="#14532d">This pipeline fits your problem</text>
+<text x="50" y="1517" font-size="12.6" fill="#475569">Mixed variable types, a workable sample size, a single</text>
+<text x="50" y="1534" font-size="12.6" fill="#475569">assignment per case, and something to validate against.</text>
+<text x="50" y="1551" font-size="12.6" fill="#475569">Start with README.md, then section 2 of the script.</text>
+<rect x="578" y="76" width="80" height="20" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/><text x="618" y="90" text-anchor="middle" font-size="11.5" font-weight="650" fill="#475569">variables</text>
+<rect x="578" y="186" width="94" height="20" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/><text x="625" y="200" text-anchor="middle" font-size="11.5" font-weight="650" fill="#475569">a continuum</text>
+<rect x="578" y="312" width="115" height="20" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/><text x="635" y="326" text-anchor="middle" font-size="11.5" font-weight="650" fill="#475569">all continuous</text>
+<rect x="578" y="391" width="122" height="20" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/><text x="639" y="405" text-anchor="middle" font-size="11.5" font-weight="650" fill="#475569">all categorical</text>
+<rect x="578" y="500" width="39" height="20" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/><text x="597" y="514" text-anchor="middle" font-size="11.5" font-weight="650" fill="#475569">yes</text>
+<rect x="578" y="626" width="87" height="20" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/><text x="622" y="640" text-anchor="middle" font-size="11.5" font-weight="650" fill="#475569">under ~100</text>
+<rect x="578" y="722" width="101" height="20" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/><text x="628" y="736" text-anchor="middle" font-size="11.5" font-weight="650" fill="#475569">over ~10,000</text>
+<rect x="578" y="831" width="39" height="20" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/><text x="597" y="845" text-anchor="middle" font-size="11.5" font-weight="650" fill="#475569">yes</text>
+<rect x="578" y="957" width="39" height="20" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/><text x="597" y="971" text-anchor="middle" font-size="11.5" font-weight="650" fill="#475569">yes</text>
+<rect x="578" y="1083" width="39" height="20" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/><text x="597" y="1097" text-anchor="middle" font-size="11.5" font-weight="650" fill="#475569">yes</text>
+<rect x="578" y="1209" width="80" height="20" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/><text x="618" y="1223" text-anchor="middle" font-size="11.5" font-weight="650" fill="#475569">over ~20%</text>
+<rect x="578" y="1335" width="32" height="20" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/><text x="594" y="1349" text-anchor="middle" font-size="11.5" font-weight="650" fill="#475569">no</text>
+<rect x="48" y="1461" width="39" height="20" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/><text x="67" y="1475" text-anchor="middle" font-size="11.5" font-weight="650" fill="#475569">yes</text>
+</svg>
+
+<figcaption>Follow the spine downwards. A branch to the right leaves this
+pipeline; a dashed branch is a reason rather than an exit. The same tree, in a
+form you can edit, is in <a href="decision_guide.md">decision_guide.md</a>.</figcaption>
+</figure>
+
+<h2>Note on node 4 — the terms, briefly</h2>
+<p><strong>Probabilistic assignment</strong> means each case receives a
+<em>probability</em> of belonging to each group — 0.7 here, 0.2 there, 0.1
+elsewhere — instead of a single label, so borderline cases are visible as
+borderline and that uncertainty can be carried into later analyses.
+<strong>Fit indices</strong> (BIC, AIC, entropy) are numbers that compare models
+with different numbers of groups on one common scale, so the choice of
+<em>k</em> rests on a statistical criterion rather than on judgement. PAM gives
+you neither: every case lands in exactly one cluster, and no index in this
+pipeline has the standing of a model comparison.</p>
+<p>If both matter to your question, use a mixture model — latent class analysis
+for categorical indicators, latent profile analysis for continuous ones, and a
+mixed-mode mixture for both. What you give up is robustness: mixture models
+assume a parametric form for each class, and a misspecified model can produce
+classes that are artefacts of the distributional assumption rather than of the
+data. The two families fail in different directions, which is why the choice is
+worth making deliberately rather than by habit.</p>
+
+<h2>Note on node 10 — what “variables to validate on” means</h2>
+<p>This is the node people most often misread, so it is worth being concrete. It
+has nothing to do with checking your references. It is about the
+<strong>design</strong> of your variable set.</p>
+<p>Suppose you cluster respondents on six variables: three attitude scales, a
+categorical affiliation, and two binary indicators. Your clusters will differ on
+all six — massively, significantly, with enormous effect sizes. Of course they
+will: the algorithm maximised exactly that separation. <strong>That is not weak
+evidence. It is no evidence</strong>, and the pipeline refuses to run the test
+(section 7.3).</p>
+<p>Now suppose you also measured something else — a wellbeing score, a
+behavioural outcome, a service-use record — and you deliberately kept it
+<em>out</em> of the clustering. If the clusters differ on that, you have learned
+something: the typology captures a structure that extends beyond the variables
+that defined it.</p>
+<p>That withholding is a real cost. Every interesting variable you keep aside is
+a variable that does not shape your typology, and you have to decide in advance
+which role each one plays. But it is the only thing that distinguishes a
+typology from an arbitrary partition of your sample.</p>
+<p><strong>If you have nothing to withhold</strong>, you can still run the
+analysis. You will have a description of how your sample divides on the
+variables you chose, which is a legitimate and sometimes sufficient result — for
+characterising a population, for designing a stratified sample, for generating
+hypotheses. What you will not have is evidence that the division means anything.
+Report it as a partition, say plainly that it is unvalidated, and resist the
+vocabulary of types. The pipeline will warn you and continue.</p>
+
+<h2>The alternatives, compared</h2>
+<p>The first seven rows extend the comparison most applied researchers start
+from; the last four are the ones that usually decide the question.</p>
+<div class="tablewrap">
+<table>
+<thead><tr>
+  <th></th><th>k-means</th><th class="pick">k-medoids + Gower</th>
+  <th>Hierarchical</th><th>LCA / LPA</th><th>k-prototypes</th>
+</tr></thead>
+<tbody>
+<tr><td>Data types</td><td>Continuous</td><td class="pick">Mixed</td><td>Any, via the chosen distance</td><td>LCA categorical, LPA continuous, mixture models both</td><td>Mixed</td></tr>
+<tr><td>Robustness to outliers</td><td>Low</td><td class="pick">High</td><td>Depends on linkage</td><td>Model-dependent</td><td>Low to moderate</td></tr>
+<tr><td>Computation</td><td>Fast</td><td class="pick">Slow: an n × n matrix</td><td>Very slow on large n</td><td>Moderate; slower with many classes</td><td>Fast</td></tr>
+<tr><td>Determining k</td><td>Required</td><td class="pick">Required</td><td>Not required — read the dendrogram</td><td>Required, but guided by fit indices</td><td>Required</td></tr>
+<tr><td>Scalability</td><td>High</td><td class="pick">Moderate (~10,000)</td><td>Low</td><td>Moderate</td><td>High</td></tr>
+<tr><td>Interpretability</td><td>Moderate</td><td class="pick">High</td><td>High — the nesting is informative</td><td>High — profiles plus probabilities</td><td>Moderate</td></tr>
+<tr><td>Distance</td><td>Euclidean</td><td class="pick">Any, including Gower</td><td>Several</td><td>None: likelihood-based</td><td>Euclidean plus matching</td></tr>
+<tr><td>Distributional assumptions</td><td>Spherical, roughly equal-variance clusters</td><td class="pick">None</td><td>None</td><td>A parametric model per class; LCA assumes local independence</td><td>Implicit</td></tr>
+<tr><td>Assignment</td><td>One cluster per case</td><td class="pick">One cluster per case</td><td>One cluster per case, at a chosen cut</td><td>A probability per case per class</td><td>One cluster per case</td></tr>
+<tr><td>What the centre is</td><td>A centroid: an average that may describe no one</td><td class="pick">A medoid: an actual case</td><td>No centre as such</td><td>Class-conditional parameters</td><td>Mixed centroid and mode</td></tr>
+<tr><td>Model-comparison indices</td><td>No</td><td class="pick">No</td><td>No</td><td>Yes: BIC, AIC, entropy, bootstrapped LRT</td><td>No</td></tr>
+</tbody>
+</table>
+</div>
+<p>Read the table by column, not by row. There is no method that wins
+everywhere, and the highlighted column loses on three of the eleven criteria.
+What it offers is a particular combination — mixed types, robustness, and an
+interpretable real-case centre — bought at the price of scale and of any
+model-comparison machinery.</p>
+
+<h3>Two more that are sometimes the right answer</h3>
+<p><strong>Archetypal analysis</strong> describes cases as mixtures of extreme
+profiles rather than assigning them to groups. Useful when your theory says
+people sit <em>between</em> ideal types rather than <em>in</em> categories.</p>
+<p><strong>No clustering at all.</strong> A well-chosen cross-tabulation of two
+theoretically central variables is often more informative, more stable and
+easier to report than a six-cluster solution, and it is not vulnerable to any of
+the failure modes above. This is worth considering seriously before the tree,
+not after it.</p>
+
+<h2>Checklist before you start</h2>
+<p>Twelve items. If you cannot tick one, it is better to know now.</p>
+<ul class="check">
+<li>My question is about grouping <strong>cases</strong>, not variables.</li>
+<li>I can say in one sentence what the typology is <strong>for</strong>.</li>
+<li>Every clustering variable is there because theory puts it there, and I can say why each one belongs.</li>
+<li>No construct is entered twice — in particular, no single-choice question has been expanded into one-hot indicators.</li>
+<li>I have thought about what equal weighting implies, and either accepted it or set weights deliberately.</li>
+<li>I have enough cases: as a floor, several dozen per expected cluster, and more when the clusters are unequal in size.</li>
+<li>I know how much data are missing, and I have chosen a route to complete data rather than discovering one mid-analysis.</li>
+<li>I have at least one variable I am willing to keep <strong>out</strong> of the clustering, for validation.</li>
+<li>I am prepared to report the solutions I rejected, not only the one I kept.</li>
+<li>I know what I will do if the permutation reference shows no structure — including the possibility of reporting that.</li>
+<li>I will be able to name each cluster from its profile, without referring to its number.</li>
+<li>I have somewhere to deposit the code, the diagnostics and, if ethics permit, the data.</li>
+</ul>
+
+<h2>References</h2>
+<div class="refs">
+<p>Bergman, L. R., &amp; Magnusson, D. (1997). A person-oriented approach in research on developmental psychopathology. <em>Development and Psychopathology, 9</em>(2), 291–319.</p>
+<p>Gower, J. C. (1971). A general coefficient of similarity and some of its properties. <em>Biometrics, 27</em>(4), 857–871. <a href="https://doi.org/10.2307/2528823">https://doi.org/10.2307/2528823</a></p>
+<p>Hennig, C. (2007). Cluster-wise assessment of cluster stability. <em>Computational Statistics &amp; Data Analysis, 52</em>(1), 258–271. <a href="https://doi.org/10.1016/j.csda.2006.11.025">https://doi.org/10.1016/j.csda.2006.11.025</a></p>
+<p>Hennig, C., &amp; Liao, T. F. (2013). How to find an appropriate clustering for mixed-type variables with application to socio-economic stratification. <em>Journal of the Royal Statistical Society: Series C (Applied Statistics), 62</em>(3), 309–369. <a href="https://doi.org/10.1111/j.1467-9876.2012.01066.x">https://doi.org/10.1111/j.1467-9876.2012.01066.x</a></p>
+<p>Kaufman, L., &amp; Rousseeuw, P. J. (1990). <em>Finding groups in data: An introduction to cluster analysis</em>. Wiley. <a href="https://doi.org/10.1002/9780470316801">https://doi.org/10.1002/9780470316801</a></p>
+<p>Luke, D. A. (2005). Getting the big picture in community science: Methods that capture context. <em>American Journal of Community Psychology, 35</em>(3–4), 185–200. <a href="https://doi.org/10.1007/s10464-005-3397-z">https://doi.org/10.1007/s10464-005-3397-z</a></p>
+<p>Milligan, G. W., &amp; Cooper, M. C. (1985). An examination of procedures for determining the number of clusters in a data set. <em>Psychometrika, 50</em>(2), 159–179. <a href="https://doi.org/10.1007/BF02294245">https://doi.org/10.1007/BF02294245</a></p>
+<p>Rapkin, B. D., &amp; Luke, D. A. (1993). Cluster analysis in community research: Epistemology and practice. <em>American Journal of Community Psychology, 21</em>(2), 247–277. <a href="https://doi.org/10.1007/BF00941623">https://doi.org/10.1007/BF00941623</a></p>
+</div>
+
+<footer>
+Part of the PAM-Gower Pipeline. Documentation released under
+<a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
+</footer>
+
+</div>
+</body>
+</html>

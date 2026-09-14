@@ -1,0 +1,42 @@
+R version 4.4.2 (2024-10-31 ucrt)
+Platform: x86_64-w64-mingw32/x64
+Running under: Windows 11 x64 (build 26200)
+
+Matrix products: default
+
+
+locale:
+[1] LC_COLLATE=French_Canada.utf8  LC_CTYPE=French_Canada.utf8    LC_MONETARY=French_Canada.utf8
+[4] LC_NUMERIC=C                   LC_TIME=French_Canada.utf8    
+
+time zone: America/Toronto
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] ggplot2_3.5.1 dplyr_1.1.4   cluster_2.1.6
+
+loaded via a namespace (and not attached):
+ [1] gtable_0.3.6        shape_1.4.6.1       visdat_0.6.0        lattice_0.22-6     
+ [5] tzdb_0.4.0          vctrs_0.6.5         tools_4.4.2         Rdpack_2.6.2       
+ [9] generics_0.1.3      parallel_4.4.2      stats4_4.4.2        flexmix_2.3-19     
+[13] tibble_3.2.1        DEoptimR_1.1-3-1    pan_1.9             pkgconfig_2.0.3    
+[17] jomo_2.7-6          Matrix_1.7-1        readxl_1.4.3        lifecycle_1.0.4    
+[21] farver_2.1.2        compiler_4.4.2      textshaping_1.0.0   munsell_0.5.1      
+[25] codetools_0.2-20    class_7.3-22        glmnet_4.1-8        mice_3.17.0        
+[29] crayon_1.5.3        pillar_1.10.1       nloptr_2.1.1        tidyr_1.3.1        
+[33] prabclus_2.3-4      MASS_7.3-61         diptest_0.77-1      naniar_1.1.0       
+[37] fpc_2.2-13          reformulas_0.4.0    iterators_1.0.14    rpart_4.1.23       
+[41] boot_1.3-31         mclust_6.1.1        foreach_1.5.2       mitml_0.4-5        
+[45] robustbase_0.99-4-1 nlme_3.1-166        tidyselect_1.2.1    kernlab_0.9-33     
+[49] purrr_1.0.2         labeling_0.4.3      forcats_1.0.0       splines_4.4.2      
+[53] grid_4.4.2          colorspace_2.1-1    cli_3.6.3           magrittr_2.0.3     
+[57] survival_3.7-0      broom_1.0.7         withr_3.0.2         readr_2.1.5        
+[61] scales_1.3.0        backports_1.5.0     bit64_4.6.0-1       bit_4.5.0.1        
+[65] nnet_7.3-19         lme4_1.1-36         norm_1.0-11.1       cellranger_1.1.0   
+[69] ragg_1.3.3          modeltools_0.2-23   hms_1.1.3           haven_2.5.4        
+[73] rbibutils_2.3       rlang_1.1.5         Rcpp_1.0.14         glue_1.8.0         
+[77] vroom_1.6.5         rstudioapi_0.17.1   minqa_1.2.8         R6_2.5.1           
+[81] systemfonts_1.2.1  
